@@ -7,8 +7,9 @@ export type ViaCEPAddress = {
   logradouro: string,
   complemento: string,
   bairro: string,
-  localidade: string,
+  localidade?: string,
   uf: string,
+  cidade?: string
 };
 
 export type RequestError = {
