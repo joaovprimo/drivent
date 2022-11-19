@@ -39,3 +39,9 @@ export type ticketsType = {
   createdAt: Date,
   updatedAt: Date,
 }
+
+export type ticketType = {
+  ticketTypeId: number,
+  enrollmentId: number,
+  status: string
+}
