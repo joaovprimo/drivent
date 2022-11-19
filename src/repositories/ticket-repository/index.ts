@@ -12,10 +12,20 @@ async function insertTicket(data: Prisma.TicketUncheckedCreateInput) {
   }
   );
 }
+async function findTicket(usuerId: number) {
+  return prisma.ticket.findFirst({
+    where: {
+      Enrollment: { userId: usuerId }
+    },
+    include: { TicketType: true },
+
+  });
+}
 
 const ticketRepository = {
   findTicketsType,
-  insertTicket
+  insertTicket,
+  findTicket
 };
 
 export default ticketRepository;
