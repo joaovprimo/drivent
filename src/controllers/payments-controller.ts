@@ -29,7 +29,7 @@ export async function postPayments(req: AuthenticatedRequest, res: Response) {
   const { cardData } = req.body;
 
   const ticket = Number(ticketId);
-  //issuer, number, name, expirationDate, cvv
+  
   try{
     const payment = await paymentsService.postPayment(userId, ticket, cardData);
     return res.status(httpStatus.OK).send(payment);

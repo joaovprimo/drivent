@@ -1,9 +1,9 @@
-import { ticketsType, ticketType } from "@/protocols";
+import { ticketsType } from "@/protocols";
 import ticketRepository from "@/repositories/ticket-repository";
 import { notFoundError } from "@/errors";
 import enrollmentRepository from "@/repositories/enrollment-repository";
 import { TicketStatus } from "@prisma/client";
-import { Prisma, Ticket, TicketType } from "@prisma/client";
+import { Ticket, TicketType } from "@prisma/client";
 
 async function getTicketTypesServices(): Promise<ticketsType[]> {
   const ticketsTypes = await ticketRepository.findTicketsType();

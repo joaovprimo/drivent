@@ -30,7 +30,6 @@ async function postPayment(userId: number, ticket: number, cardData: cardData): 
   const insertPayment = await paymentsRepository.insertPayment(data);
   await ticketRepository.upDateTicket(ticket);
   return insertPayment;
-  //falta o retorno de sucesso de criação
 }
 type PaymentToInsert = Omit <Prisma.PaymentUncheckedCreateInput, "id"|"createdAt"|"updatedAt">
 
