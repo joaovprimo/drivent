@@ -9,8 +9,15 @@ async function findPayment(ticket: number) {
   });
 }
 
+async function insertPayment(data: Prisma.PaymentUncheckedCreateInput) {
+  return await prisma.payment.create({
+    data
+  });
+}
+
 const paymentsRepository = {
-  findPayment
+  findPayment,
+  insertPayment
 };
 
 export default paymentsRepository;
