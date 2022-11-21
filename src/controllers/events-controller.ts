@@ -7,6 +7,12 @@ export async function getDefaultEvent(_req: Request, res: Response) {
     const event = await eventsService.getFirstEvent();
     return res.status(httpStatus.OK).send(event);
   } catch (error) {
-    return res.status(httpStatus.BAD_REQUEST).send({});
+    if(error.name === "UnauthorizedError") {
+      return res.sendStatus(httpStatus.UNAUTHORIZED);
+    }else if(error.name === "NotFoundError") {
+      return res.sendStatus(httpStatus.NOT_FOUND);
+    }else if (error.name === "BadRequestError") {
+      return res.sendStatus(httpStatus.BAD_REQUEST);
+    }
   }
 }
