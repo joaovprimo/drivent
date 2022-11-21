@@ -32,7 +32,7 @@ export async function postPayments(req: AuthenticatedRequest, res: Response) {
   //issuer, number, name, expirationDate, cvv
   try{
     const payment = await paymentsService.postPayment(userId, ticket, cardData);
-    return res.status(httpStatus.CREATED).send(payment);
+    return res.status(httpStatus.OK).send(payment);
   }catch(err) {
     if(err.name === "UnauthorizedError") {
       return res.sendStatus(httpStatus.UNAUTHORIZED);
