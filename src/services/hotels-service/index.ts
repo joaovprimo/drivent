@@ -1,4 +1,4 @@
-import { notFoundError, unauthorizedError, requestError } from "@/errors";
+import { notFoundError, unauthorizedError, requestError, paymentError } from "@/errors";
 import ticketRepository from "@/repositories/ticket-repository";
 import enrollmentRepository from "@/repositories/enrollment-repository";
 import hotelsRepository from "@/repositories/hotels-repository";
@@ -17,7 +17,7 @@ async function getHotelsService(userId: number) {
     throw unauthorizedError();
   }
   if(ticket.status !== "PAID") {
-    throw requestError(402, "PaymentRequiredError");
+    throw paymentError();
   }
   const hotels = await hotelsRepository.findHotels();
   if(!hotels) {
