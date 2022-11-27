@@ -1,46 +1,62 @@
-import { badRequestError, notFoundError, unauthorizedError }  from "@/errors";
+import { notFoundError, unauthorizedError } from "@/errors";
+import paymentRepository, { PaymentParams } from "@/repositories/payment-repository";
 import ticketRepository from "@/repositories/ticket-repository";
-import paymentsRepository from "@/repositories/payment-repository.ts";
-import { Payment, Prisma } from "@prisma/client";
-import { cardData } from "@/protocols";
+import enrollmentRepository from "@/repositories/enrollment-repository";
 
-async function getPaymentsByTicketId(userId: number, ticket: number): Promise<Payment> {
-  if(!ticket) throw badRequestError();
-  await verifyTicketById(userId, ticket); 
-  const findPaymentByTicketId = await paymentsRepository.findPayment(ticket);
-  return findPaymentByTicketId;
+async function verifyTicketAndEnrollment(ticketId: number, userId: number) {
+  const ticket = await ticketRepository.findTickeyById(ticketId);
+
+  if (!ticket) {
+    throw notFoundError();
+  }
+  const enrollment = await enrollmentRepository.findById(ticket.enrollmentId);
+
+  if (enrollment.userId !== userId) {
+    throw unauthorizedError();
+  }
 }
 
-async function verifyTicketById(userId: number, ticketId: number): Promise<ValidateTicket> {
-  const ticket = await ticketRepository.findTicketById(ticketId);
-  if (!ticket) throw notFoundError();
-  if(ticket.Enrollment.userId !== userId) throw unauthorizedError();
-  return ticket;
+async function getPaymentByTicketId(userId: number, ticketId: number) {
+  await verifyTicketAndEnrollment(ticketId, userId);
+
+  const payment = await paymentRepository.findPaymentByTicketId(ticketId);
+
+  if (!payment) {
+    throw notFoundError();
+  }
+  return payment;
 }
 
-async function postPayment(userId: number, ticket: number, cardData: cardData): Promise<Payment> {
-  if(!cardData || !ticket) throw badRequestError();
-  const price = await verifyTicketById(userId, ticket); 
-  const data = {
-    ticketId: ticket,
-    value: price.TicketType.price,
+async function paymentProcess(ticketId: number, userId: number, cardData: CardPaymentParams) {
+  await verifyTicketAndEnrollment(ticketId, userId);
+
+  const ticket = await ticketRepository.findTickeWithTypeById(ticketId);
+
+  const paymentData = {
+    ticketId,
+    value: ticket.TicketType.price,
     cardIssuer: cardData.issuer,
-    cardLastDigits: String(cardData.number).slice(-4)
-  } as PaymentToInsert;
-  const insertPayment = await paymentsRepository.insertPayment(data);
-  await ticketRepository.upDateTicket(ticket);
-  return insertPayment;
-}
-type PaymentToInsert = Omit <Prisma.PaymentUncheckedCreateInput, "id"|"createdAt"|"updatedAt">
+    cardLastDigits: cardData.number.toString().slice(-4),
+  };
 
-type ValidateTicket = {
-    Enrollment: {userId: number},
-    TicketType: {price: number}
+  const payment = await paymentRepository.createPayment(ticketId, paymentData);
+
+  await ticketRepository.ticketProcessPayment(ticketId);
+
+  return payment;
 }
 
-const paymentsService = {
-  getPaymentsByTicketId,
-  postPayment
+export type CardPaymentParams = {
+  issuer: string,
+  number: number,
+  name: string,
+  expirationDate: Date,
+  cvv: number
+}
+
+const paymentService = {
+  getPaymentByTicketId,
+  paymentProcess,
 };
 
-export default paymentsService;
+export default paymentService;

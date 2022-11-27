@@ -8,6 +8,7 @@ export async function getEnrollmentByUser(req: AuthenticatedRequest, res: Respon
 
   try {
     const enrollmentWithAddress = await enrollmentsService.getOneWithAddressByUserId(userId);
+
     return res.status(httpStatus.OK).send(enrollmentWithAddress);
   } catch (error) {
     return res.sendStatus(httpStatus.NO_CONTENT);
