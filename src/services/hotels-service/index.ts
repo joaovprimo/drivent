@@ -2,7 +2,6 @@ import { notFoundError, unauthorizedError, requestError, paymentError } from "@/
 import ticketRepository from "@/repositories/ticket-repository";
 import enrollmentRepository from "@/repositories/enrollment-repository";
 import hotelsRepository from "@/repositories/hotels-repository";
-import { TicketStatus } from "@prisma/client";
 import { Hotel, Room } from "@prisma/client";
 
 async function getHotelsService(userId: number): Promise<Hotel[]> {
@@ -14,16 +13,11 @@ async function getHotelsService(userId: number): Promise<Hotel[]> {
   if(!ticket) {
     throw notFoundError();
   }
-  if(ticket.TicketType.includesHotel === false) {
-    throw unauthorizedError();
-  }
   if(ticket.status !== "PAID") {
     throw paymentError();
   }
   const hotels = await hotelsRepository.findHotels();
-  if(!hotels) {
-    throw notFoundError();
-  }
+
   return hotels;
 } 
 

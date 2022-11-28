@@ -1,8 +1,8 @@
 import faker from "@faker-js/faker";
 import { prisma } from "@/config";
-import { TicketStatus } from "@prisma/client";
+import { TicketStatus, TicketType } from "@prisma/client";
 
-export async function createTicketType() {
+export async function createTicketType(params: Partial<TicketType> = {}) {
   return prisma.ticketType.create({
     data: {
       name: faker.name.findName(),
