@@ -30,9 +30,6 @@ async function getRoomsService(userId: number, hotelId: number): Promise<RoomWit
   if(!ticket) {
     throw notFoundError();
   }
-  if(ticket.TicketType.includesHotel === false) {
-    throw unauthorizedError();
-  }
   if(ticket.status !== "PAID") {
     throw paymentError();
   }
