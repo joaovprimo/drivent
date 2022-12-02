@@ -16,8 +16,5 @@ export async function getBookingsController(req: AuthenticatedRequest, res: Resp
     if(error.name === "PaymentError") {
       return res.sendStatus(httpStatus.PAYMENT_REQUIRED);
     }
-    if(error.name === "BadRequestError") {
-      return res.sendStatus(httpStatus.BAD_REQUEST);
-    }
   }
 }

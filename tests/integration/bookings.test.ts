@@ -70,9 +70,10 @@ describe("Get/booking", () => {
     it("should respond with status 404 when user doesn't have a ticket yet", async () => {
       const user = await createUser();
       const token = await generateValidToken(user);
-      await createEnrollmentWithAddress();
+      const enrollment = await createEnrollmentWithAddress(user);
+      const ticketType = await createTicketType();
 
-      const response = await server.get("/hotels").set("Authorization", `Bearer ${token}`);
+      const response = await server.get("/booking").set("Authorization", `Bearer ${token}`);
       
       expect(response.status).toEqual(httpStatus.NOT_FOUND);
     });
@@ -84,7 +85,7 @@ describe("Get/booking", () => {
       const ticketType = await createTicketTypeWithHotel();
       await createTicket(enrollment.id, ticketType.id, TicketStatus.RESERVED);
       
-      const response = await server.get("/hotels").set("Authorization", `Bearer ${token}`);
+      const response = await server.get("/booking").set("Authorization", `Bearer ${token}`);
       
       expect(response.status).toBe(httpStatus.PAYMENT_REQUIRED);
     });
