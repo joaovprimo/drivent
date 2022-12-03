@@ -26,7 +26,7 @@ export async function postBookingController(req: AuthenticatedRequest, res: Resp
 
   try{
     const postingBooking = await bookingService.postBookingService(userId, roomId);
-    return res.status(httpStatus.OK).send(postingBooking.id); 
+    return res.status(httpStatus.OK).send({ bookingId: postingBooking.id }); 
   }catch(error) {
     if(error.name === "NotFoundError") {
       return res.sendStatus(httpStatus.NOT_FOUND);

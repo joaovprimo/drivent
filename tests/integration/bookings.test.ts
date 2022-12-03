@@ -17,9 +17,9 @@ import {
   createTicketTypeRemote,
   createHotel,
   createRoomWithHotelId,
-  createRoomWithCapacity
+  createRoomWithCapacity,
+  createBooking 
 } from "../factories";
-import { createBooking } from "../factories/booking-factory";
 import { cleanDb, generateValidToken } from "../helpers";
 
 beforeAll(async () => {
@@ -269,7 +269,7 @@ describe("Post/booking", () => {
       const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
       const payment = await createPayment(ticket.id, ticketType.price);
       const createdHotel = await createHotel();
-      const createdRoom = await createRoomWithHotelId(createdHotel.id);
+      const createdRoom = await createRoomWithCapacity(createdHotel.id, 3);
       const body = { roomId: createdRoom.id };
 
       const response = await server.post("/booking").set("Authorization", `Bearer ${token}`).send(body);

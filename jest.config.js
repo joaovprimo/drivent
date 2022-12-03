@@ -7,6 +7,7 @@ module.exports = {
   },
   testMatch: ["<rootDir>/tests/**/*.(test|spec).ts"],
   setupFiles: ["<rootDir>/tests/setup-envs.ts"],
+  setupFilesAfterEnv: ['./jest.setup.js'],
   moduleNameMapper: {
     "@/(.*)": "<rootDir>/src/$1",
     "@test/(.*)": "<rootDir>/tests/$1",
@@ -14,3 +15,5 @@ module.exports = {
   },
   restoreMocks: true,
 };
+
+
